@@ -30,24 +30,11 @@ func GroupMap(s string, expr string) map[string]string{
     values := r.FindStringSubmatch(s)
     keys := r.SubexpNames()
 
-	fmt.Println("keys", keys)
-	fmt.Println("values", values)
-	fmt.Println("values len", len(values))
-	fmt.Println("keys[0]", keys[0])
-	fmt.Println("keys[1]", keys[1])
-	fmt.Println("keys[2]", keys[2])
-	fmt.Println("values[0]", values[0])
-	fmt.Println("values[1]", values[1])
-	fmt.Println("values[2]", values[2])
-	fmt.Println("*********************")
-
     // create map
     d := make(map[string]string)
     for i := 1; i < len(keys); i++ {
         d[keys[i]] = values[i]
     }
-	fmt.Println(d)
-	fmt.Println("*********************")
 
 	return d
 
@@ -59,19 +46,12 @@ func GroupMap(s string, expr string) map[string]string{
 //     return mi
 }
 
-func GetValue(s string, expr string) string{
-    r := regexp.MustCompile(expr)
-    values := r.FindStringSubmatch(s)
-    keys := r.SubexpNames()
-
-	fmt.Println("keys", keys)
-	fmt.Println("values", values)
-	fmt.Println("values len", len(values))
-	fmt.Println("keys[0]", keys[0])
-	fmt.Println("keys[1]", keys[1])
-	fmt.Println("values[0]", values[0])
-	fmt.Println("values[1]", values[1])
-	fmt.Println("*********************")
+func GetValue(s string, key string) string{
+	cleanedResult := ResponseCleanup(s)
+	expr := fmt.Sprintf(`%s:(?P<%s>.*)`, key, key)
+	r := regexp.MustCompile(expr)
+    values := r.FindStringSubmatch(cleanedResult)
+    // keys := r.SubexpNames()
 
 	return values[1]
 }
