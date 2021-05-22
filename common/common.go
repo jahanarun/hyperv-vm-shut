@@ -20,7 +20,7 @@ func MapToStruct(m map[string]string, val interface{}) error {
 }
 
 func ResponseCleanup(s string) string {
-	s = strings.Replace(s, " ", "", -1)
+	s = strings.ReplaceAll(s, " ", "")
 	s = strings.ToLower(s)
 	return s
 }
@@ -52,6 +52,6 @@ func GetValue(s string, key string) string{
 	r := regexp.MustCompile(expr)
     values := r.FindStringSubmatch(cleanedResult)
     // keys := r.SubexpNames()
-
-	return values[1]
+	
+	return strings.TrimSpace(values[1])
 }

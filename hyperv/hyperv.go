@@ -8,16 +8,30 @@ import (
 )
 
 type VirtualMachine struct {
-	state string
-	status string
+	Name string
+	State string
+	Status string
 }
 
-func GetVM(vmname string) *VirtualMachine {
+func GetVM(vmname string) (VirtualMachine, error) {
 	posh := powershell.New()
-	cmd := fmt.Sprintf("Get-VM -VMName \"%s\" | fl -Property State, Status", vmname)
-	stdOut, _, _ := posh.Execute(cmd)
-	vm := new(VirtualMachine)
-	vm.state = common.GetValue(stdOut, "state")
-	vm.status = common.GetValue(stdOut, "status")
-	return vm
+	cmd := fmt.Sprintf("Get-VM -VMName \"%s\" | fl -Property State, Status, Name", vmname)
+	stdOut, stdErr, err := posh.Execute(cmd)
+	fmt.Printf("stderr: %s, *****err:%s", stdErr, err)
+	if stdErr != "" || err != nil {
+		return VirtualMachine{}, err
+	}
+
+	vm := VirtualMachine{
+		State: common.GetValue(stdOut, "state"),
+		Status: common.GetValue(stdOut, "status"),
+		Name: common.GetValue(stdOut, "name"),
+	}	
+	return vm, err
+}
+
+func SaveVM(vmname string) {
+	cmd := fmt.Sprintf("Save-VM -VMName \"%s\"", vmname)
+	posh := powershell.New()
+	posh.Execute(cmd)
 }
